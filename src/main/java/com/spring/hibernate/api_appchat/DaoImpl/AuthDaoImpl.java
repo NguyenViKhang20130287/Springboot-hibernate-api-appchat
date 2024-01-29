@@ -23,7 +23,6 @@ public class AuthDaoImpl implements AuthDao {
     private PasswordEncoder passwordEncoder;
     private EmailConfig emailConfig;
     private OTPConfig otpConfig;
-    private UserDao userDao;
     private final Map<String, String> mapOTP = new HashMap<>();
 
     public AuthDaoImpl(EntityManager entityManager, PasswordEncoder passwordEncoder,
@@ -33,12 +32,19 @@ public class AuthDaoImpl implements AuthDao {
         this.passwordEncoder = passwordEncoder;
         this.emailConfig = emailConfig;
         this.otpConfig = otpConfig;
-        this.userDao = userDao;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        String query = "from User where email=:emailInput";
+        TypedQuery<User> typedQuery_user = entityManager.createQuery(query, User.class);
+        typedQuery_user.setParameter("emailInput", email);
+        return typedQuery_user.getResultList().isEmpty() ? null : typedQuery_user.getSingleResult();
     }
 
     @Override
     public ResponseEntity<?> signUp(String email) {
-        User user = userDao.findByEmail(email);
+        User user = findByEmail(email);
         if (user != null) return new ResponseEntity<>("Email already exist !!!", HttpStatus.BAD_REQUEST);
         otpConfig.clearOtp(mapOTP, email);
         String otp = otpConfig.generateOtp(mapOTP, email);
@@ -62,12 +68,12 @@ public class AuthDaoImpl implements AuthDao {
         user.setIsAdmin(1);
         entityManager.persist(user);
         otpConfig.clearOtp(mapOTP, authDto.getEmail());
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<?> signIn(String email, String password) {
-        User user = userDao.findByEmail(email);
+        User user = findByEmail(email);
         if (user == null) return new ResponseEntity<>("Email not found!!!", HttpStatus.NOT_FOUND);
         if (!passwordEncoder.matches(password, user.getPassword()))
             return new ResponseEntity<>("Password invalid!!", HttpStatus.BAD_REQUEST);
@@ -76,7 +82,7 @@ public class AuthDaoImpl implements AuthDao {
 
     @Override
     public ResponseEntity<?> forgotPassword(String email) {
-        User user = userDao.findByEmail(email);
+        User user = findByEmail(email);
         if (user == null) return new ResponseEntity<>("Email not found!!!", HttpStatus.NOT_FOUND);
         System.out.println("Map otp: " + mapOTP);
         otpConfig.clearOtp(mapOTP, email);
@@ -89,7 +95,7 @@ public class AuthDaoImpl implements AuthDao {
     @Transactional
     @Override
     public ResponseEntity<?> resetPassword(AuthDto authDto) {
-        User user = userDao.findByEmail(authDto.getEmail());
+        User user = findByEmail(authDto.getEmail());
         if (user == null) return new ResponseEntity<>("User not found!!!", HttpStatus.BAD_REQUEST);
         if (!otpConfig.checkEmailIsValid(mapOTP, authDto.getEmail())) {
             return new ResponseEntity<>("OTP has expired!!!", HttpStatus.BAD_REQUEST);

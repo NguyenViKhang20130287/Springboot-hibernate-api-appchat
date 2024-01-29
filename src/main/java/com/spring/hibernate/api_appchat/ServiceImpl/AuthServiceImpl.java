@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findByEmail(username);
+        User user = authDao.findByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException("Invalid email or password !!!");
         }
