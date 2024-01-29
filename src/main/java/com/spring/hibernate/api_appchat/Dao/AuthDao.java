@@ -8,5 +8,5 @@ public interface AuthDao {
     ResponseEntity<?> confirmSignUp(AuthDto authDto);
     ResponseEntity<?> signIn(String email, String password);
     ResponseEntity<?> forgotPassword(String email);
-    ResponseEntity<?> resetPassword(AuthDao authDao);
+    ResponseEntity<?> resetPassword(AuthDto authDto);
 }

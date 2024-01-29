@@ -76,11 +76,30 @@ public class AuthDaoImpl implements AuthDao {
 
     @Override
     public ResponseEntity<?> forgotPassword(String email) {
-        return null;
+        User user = userDao.findByEmail(email);
+        if (user == null) return new ResponseEntity<>("Email not found!!!", HttpStatus.NOT_FOUND);
+        System.out.println("Map otp: " + mapOTP);
+        otpConfig.clearOtp(mapOTP, email);
+        String otp = otpConfig.generateOtp(mapOTP, email);
+        emailConfig.send("RESET PASSWORD", email, otp);
+        otpConfig.setTimeOutOtp(mapOTP, email, 3);
+        return new ResponseEntity<>("OTP is sent. The OTP is only valid for 3 minutes!", HttpStatus.OK);
     }
 
+    @Transactional
     @Override
-    public ResponseEntity<?> resetPassword(AuthDao authDao) {
-        return null;
+    public ResponseEntity<?> resetPassword(AuthDto authDto) {
+        User user = userDao.findByEmail(authDto.getEmail());
+        if (user == null) return new ResponseEntity<>("User not found!!!", HttpStatus.BAD_REQUEST);
+        if (!otpConfig.checkEmailIsValid(mapOTP, authDto.getEmail())) {
+            return new ResponseEntity<>("OTP has expired!!!", HttpStatus.BAD_REQUEST);
+        }
+        if (!mapOTP.get(authDto.getEmail()).equals(authDto.getOtp())) {
+            return new ResponseEntity<>("OTP invalid!!!", HttpStatus.BAD_REQUEST);
+        }
+        user.setPassword(passwordEncoder.encode(authDto.getNewPassword()));
+        entityManager.merge(user);
+        otpConfig.clearOtp(mapOTP, authDto.getEmail());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

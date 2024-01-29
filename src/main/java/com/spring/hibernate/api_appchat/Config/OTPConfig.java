@@ -24,7 +24,7 @@ public class OTPConfig {
             try {
                 TimeUnit.MINUTES.sleep(minutes);
                 mapOtp.remove(email);
-                System.out.println("3 Minutes finish.");
+                System.out.println("3 Minutes finish. OTP is clear.");
             } catch (Exception e) {
                 e.printStackTrace();
             }

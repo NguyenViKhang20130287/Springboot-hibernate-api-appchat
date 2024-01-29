@@ -27,7 +27,17 @@ public class AuthController {
     }
 
     @PostMapping("sign-in")
-    public ResponseEntity<?> signIn(@RequestParam String email, @RequestParam String password){
+    public ResponseEntity<?> signIn(@RequestParam String email, @RequestParam String password) {
         return ResponseEntity.ok(authService.signIn(email, password));
+    }
+
+    @PostMapping("forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+        return ResponseEntity.ok(authService.forgotPassword(email));
+    }
+
+    @PostMapping("forgot-password/confirm")
+    public ResponseEntity<?> confirmForgotPassword(@RequestBody AuthDto authDto) {
+        return ResponseEntity.ok(authService.resetPassword(authDto));
     }
 }

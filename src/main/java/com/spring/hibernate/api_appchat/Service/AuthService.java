@@ -10,5 +10,5 @@ public interface AuthService extends UserDetailsService {
     ResponseEntity<?> confirmSignUp(AuthDto authDto);
     ResponseEntity<?> signIn(String email, String password);
     ResponseEntity<?> forgotPassword(String email);
-    ResponseEntity<?> resetPassword(AuthDao authDao);
+    ResponseEntity<?> resetPassword(AuthDto authDto);
 }
