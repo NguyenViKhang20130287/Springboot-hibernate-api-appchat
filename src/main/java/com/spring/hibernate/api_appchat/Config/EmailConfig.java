@@ -1,11 +1,12 @@
 package com.spring.hibernate.api_appchat.Config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-@Service
+@Configuration
 public class EmailConfig {
     private JavaMailSender javaMailSender;
 

@@ -1,18 +1,28 @@
 package com.spring.hibernate.api_appchat.Controller;
 
+import com.spring.hibernate.api_appchat.Dto.AuthDto;
 import com.spring.hibernate.api_appchat.Service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth/")
 public class AuthController {
     private final AuthService authService;
+
     @Autowired
-    public AuthController(AuthService authService){
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
+    @PostMapping("sign-up")
+    public ResponseEntity<?> signUp(@RequestParam String email) {
+        return ResponseEntity.ok(authService.signUp(email));
+    }
 
+    @PostMapping("sign-up/confirm")
+    public ResponseEntity<?> confirmSignUp(@RequestBody AuthDto authDto) {
+        return ResponseEntity.ok(authService.confirmSignUp(authDto));
+    }
 }
