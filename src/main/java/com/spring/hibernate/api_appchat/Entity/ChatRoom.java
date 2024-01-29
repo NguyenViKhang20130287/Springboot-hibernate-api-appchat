@@ -1,5 +1,7 @@
 package com.spring.hibernate.api_appchat.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,13 +30,9 @@ public class ChatRoom {
     @Column(name = "created_at")
     private String createdAt;
 
-//    @JsonIgnore
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "host_id")
     private User host;
-
-    @OneToMany(mappedBy = "chatRoom")
-    private List<RoomMember> roomMembers;
-
 
 }

@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<?> signIn(String email, String password) {
-        return null;
+        return authDao.signIn(email, password);
     }
 
     @Override

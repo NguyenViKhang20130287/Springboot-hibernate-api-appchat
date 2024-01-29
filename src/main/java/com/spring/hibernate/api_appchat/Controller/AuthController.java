@@ -25,4 +25,9 @@ public class AuthController {
     public ResponseEntity<?> confirmSignUp(@RequestBody AuthDto authDto) {
         return ResponseEntity.ok(authService.confirmSignUp(authDto));
     }
+
+    @PostMapping("sign-in")
+    public ResponseEntity<?> signIn(@RequestParam String email, @RequestParam String password){
+        return ResponseEntity.ok(authService.signIn(email, password));
+    }
 }

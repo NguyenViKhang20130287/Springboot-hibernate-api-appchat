@@ -56,7 +56,7 @@ public class AuthDaoImpl implements AuthDao {
             return new ResponseEntity<>("OTP invalid!!!", HttpStatus.BAD_REQUEST);
         User user = new User();
         user.setEmail(authDto.getEmail());
-        user.setPassword(authDto.getPassword());
+        user.setPassword(passwordEncoder.encode(authDto.getPassword()));
         user.setDisplayName(authDto.getDisplayName());
         user.setAvatar("Avatar link");
         user.setIsAdmin(1);
@@ -67,7 +67,11 @@ public class AuthDaoImpl implements AuthDao {
 
     @Override
     public ResponseEntity<?> signIn(String email, String password) {
-        return null;
+        User user = userDao.findByEmail(email);
+        if (user == null) return new ResponseEntity<>("Email not found!!!", HttpStatus.NOT_FOUND);
+        if (!passwordEncoder.matches(password, user.getPassword()))
+            return new ResponseEntity<>("Password invalid!!", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @Override

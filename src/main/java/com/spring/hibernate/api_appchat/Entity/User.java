@@ -1,5 +1,6 @@
 package com.spring.hibernate.api_appchat.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,6 +44,7 @@ public class User implements UserDetails {
         if (isAdmin == 0) return List.of(new SimpleGrantedAuthority("ADMIN"));
         return List.of(new SimpleGrantedAuthority("CUSTOMER"));
     }
+
     @Override
     public String getUsername() {
         return email;
