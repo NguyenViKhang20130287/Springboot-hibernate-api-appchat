@@ -39,6 +39,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
     private List<ChatRoom> hostedChatRooms;
 
+    @OneToMany(mappedBy = "joinedUser")
+    private List<RoomMember> joinedChatRooms;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (isAdmin == 0) return List.of(new SimpleGrantedAuthority("ADMIN"));

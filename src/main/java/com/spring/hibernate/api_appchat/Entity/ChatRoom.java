@@ -35,4 +35,7 @@ public class ChatRoom {
     @JoinColumn(name = "host_id")
     private User host;
 
+    @OneToMany(mappedBy = "chatRoom")
+    private List<RoomMember> members;
+
 }
