@@ -1,6 +1,7 @@
 package com.spring.hibernate.api_appchat.DaoImpl;
 
 import com.spring.hibernate.api_appchat.Dao.ChatRoomDao;
+import com.spring.hibernate.api_appchat.Dao.UserDao;
 import com.spring.hibernate.api_appchat.Dto.ChatRoomDto;
 import com.spring.hibernate.api_appchat.Entity.ChatRoom;
 import com.spring.hibernate.api_appchat.Entity.RoomMember;
@@ -20,16 +21,17 @@ import java.util.List;
 @Repository
 public class ChatRoomDaoImpl implements ChatRoomDao {
     private final EntityManager entityManager;
+    private final UserDao userDao;
 
     @Autowired
-    public ChatRoomDaoImpl(EntityManager entityManager) {
+    public ChatRoomDaoImpl(EntityManager entityManager, UserDao userDao) {
         this.entityManager = entityManager;
+        this.userDao = userDao;
     }
 
     @Override
     public ChatRoom findById(long id) {
-        ChatRoom chatRoom = entityManager.find(ChatRoom.class, id);
-        return chatRoom;
+        return entityManager.find(ChatRoom.class, id);
     }
 
     @Override
@@ -61,5 +63,30 @@ public class ChatRoomDaoImpl implements ChatRoomDao {
         entityManager.persist(chatRoom);
         entityManager.persist(roomMember);
         return new ResponseEntity<>(chatRoom, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteRoom(long roomId, long hostId) {
+        ChatRoom chatRoom = findById(roomId);
+        if (chatRoom.getHost().getId() != hostId)
+            return new ResponseEntity<>("No permission!!", HttpStatus.BAD_REQUEST);
+        entityManager.remove(chatRoom);
+        return new ResponseEntity<>("Delete successful", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> chatRoomDetails(long roomId) {
+        ChatRoom chatRoom = entityManager.find(ChatRoom.class, roomId);
+        return new ResponseEntity<>(chatRoom, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> editChatroom(ChatRoomDto chatRoomDto) {
+        ChatRoom chatRoom = findById(chatRoomDto.getId());
+        chatRoom.setRoomName(chatRoomDto.getName());
+        chatRoom.setPasswordRoom(chatRoomDto.getPasswordRoom());
+        chatRoom.setAvatarRoom(chatRoomDto.getAvatarRoom());
+        chatRoom.setCreatedAt(String.valueOf(LocalDateTime.now()));
+        return new ResponseEntity<>(chatRoom, HttpStatus.OK);
     }
 }

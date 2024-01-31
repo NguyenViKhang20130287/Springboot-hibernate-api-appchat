@@ -31,4 +31,19 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public ResponseEntity<?> createRoom(ChatRoomDto chatRoomDto) {
         return chatRoomDao.createRoom(chatRoomDto);
     }
+
+    @Override
+    public ResponseEntity<?> deleteRoom(long roomId, long hostId) {
+        return chatRoomDao.deleteRoom(roomId, hostId);
+    }
+
+    @Override
+    public ResponseEntity<?> chatRoomDetails(long roomId) {
+        return chatRoomDao.chatRoomDetails(roomId);
+    }
+
+    @Override
+    public ResponseEntity<?> editChatroom(ChatRoomDto chatRoomDto) {
+        return chatRoomDao.editChatroom(chatRoomDto);
+    }
 }

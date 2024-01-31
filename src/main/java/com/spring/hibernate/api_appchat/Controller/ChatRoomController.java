@@ -25,4 +25,19 @@ public class ChatRoomController {
     public ResponseEntity<?> createRoom(@RequestBody ChatRoomDto chatRoomDto) {
         return ResponseEntity.ok(chatRoomService.createRoom(chatRoomDto));
     }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<?> deleteRoom(@RequestParam long roomId, @RequestParam long hostId) {
+        return ResponseEntity.ok(chatRoomService.deleteRoom(roomId, hostId));
+    }
+
+    @GetMapping("details/{roomId}")
+    public ResponseEntity<?> roomDetails(@PathVariable long roomId){
+        return ResponseEntity.ok(chatRoomService.chatRoomDetails(roomId));
+    }
+
+    @PostMapping("edit")
+    public ResponseEntity<?> editRoom(@RequestBody ChatRoomDto chatRoomDto){
+        return ResponseEntity.ok(chatRoomService.editChatroom(chatRoomDto));
+    }
 }
