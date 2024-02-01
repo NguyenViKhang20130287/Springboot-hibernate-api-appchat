@@ -7,4 +7,5 @@ public class JoinRoomDto {
     private long roomId;
     private long userId;
     private String passwordRoom;
+    private long hostId;
 }

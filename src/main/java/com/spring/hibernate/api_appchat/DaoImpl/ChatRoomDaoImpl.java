@@ -1,8 +1,8 @@
 package com.spring.hibernate.api_appchat.DaoImpl;
 
 import com.spring.hibernate.api_appchat.Dao.ChatRoomDao;
-import com.spring.hibernate.api_appchat.Dao.UserDao;
 import com.spring.hibernate.api_appchat.Dto.ChatRoomDto;
+import com.spring.hibernate.api_appchat.Dto.JoinRoomDto;
 import com.spring.hibernate.api_appchat.Entity.ChatRoom;
 import com.spring.hibernate.api_appchat.Entity.RoomMember;
 import com.spring.hibernate.api_appchat.Entity.User;
@@ -21,12 +21,10 @@ import java.util.List;
 @Repository
 public class ChatRoomDaoImpl implements ChatRoomDao {
     private final EntityManager entityManager;
-    private final UserDao userDao;
 
     @Autowired
-    public ChatRoomDaoImpl(EntityManager entityManager, UserDao userDao) {
+    public ChatRoomDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.userDao = userDao;
     }
 
     @Override
@@ -72,7 +70,7 @@ public class ChatRoomDaoImpl implements ChatRoomDao {
         List<RoomMember> roomMembers = chatRoom.getMembers();
         if (chatRoom.getHost().getId() != hostId)
             return new ResponseEntity<>("No permission!!", HttpStatus.BAD_REQUEST);
-        for (RoomMember roomMember : roomMembers){
+        for (RoomMember roomMember : roomMembers) {
             entityManager.remove(roomMember);
         }
         entityManager.remove(chatRoom);
@@ -94,5 +92,41 @@ public class ChatRoomDaoImpl implements ChatRoomDao {
         chatRoom.setAvatarRoom(chatRoomDto.getAvatarRoom());
         chatRoom.setCreatedAt(String.valueOf(LocalDateTime.now()));
         return new ResponseEntity<>(chatRoom, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> addUser(JoinRoomDto joinRoomDto) {
+        ChatRoom room = entityManager.find(ChatRoom.class, joinRoomDto.getRoomId());
+        if (room == null) return new ResponseEntity<>("Room not found", HttpStatus.NOT_FOUND);
+        User user = entityManager.find(User.class, joinRoomDto.getUserId());
+        if (user == null) return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        if (joinRoomDto.getHostId() != room.getHost().getId())
+            return new ResponseEntity<>("No permission", HttpStatus.BAD_REQUEST);
+        RoomMember member = new RoomMember();
+        member.setChatRoom(room);
+        member.setJoinedUser(user);
+        member.setJoinedAt(String.valueOf(LocalDateTime.now()));
+        entityManager.persist(member);
+        return new ResponseEntity<>(member, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> removeUser(JoinRoomDto joinRoomDto) {
+        ChatRoom room = entityManager.find(ChatRoom.class, joinRoomDto.getRoomId());
+        if (room == null) return new ResponseEntity<>("Room not found", HttpStatus.NOT_FOUND);
+        User user = entityManager.find(User.class, joinRoomDto.getUserId());
+        if (user == null) return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        if (joinRoomDto.getHostId() != room.getHost().getId())
+            return new ResponseEntity<>("No permission", HttpStatus.BAD_REQUEST);
+        List<RoomMember> members = room.getMembers();
+        for (RoomMember member : members) {
+            if (member.getJoinedUser().getId() == joinRoomDto.getUserId()) {
+                entityManager.remove(member);
+                return new ResponseEntity<>("Remove user successful", HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>("The user has not joined this chat room", HttpStatus.BAD_REQUEST);
     }
 }

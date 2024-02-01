@@ -2,6 +2,7 @@ package com.spring.hibernate.api_appchat.ServiceImpl;
 
 import com.spring.hibernate.api_appchat.Dao.ChatRoomDao;
 import com.spring.hibernate.api_appchat.Dto.ChatRoomDto;
+import com.spring.hibernate.api_appchat.Dto.JoinRoomDto;
 import com.spring.hibernate.api_appchat.Entity.ChatRoom;
 import com.spring.hibernate.api_appchat.Service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public ResponseEntity<?> editChatroom(ChatRoomDto chatRoomDto) {
         return chatRoomDao.editChatroom(chatRoomDto);
+    }
+
+    @Override
+    public ResponseEntity<?> addUser(JoinRoomDto joinRoomDto) {
+        return chatRoomDao.addUser(joinRoomDto);
+    }
+
+    @Override
+    public ResponseEntity<?> removeUser(JoinRoomDto joinRoomDto) {
+        return chatRoomDao.removeUser(joinRoomDto);
     }
 }

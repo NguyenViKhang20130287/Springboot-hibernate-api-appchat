@@ -1,6 +1,7 @@
 package com.spring.hibernate.api_appchat.Controller;
 
 import com.spring.hibernate.api_appchat.Dto.ChatRoomDto;
+import com.spring.hibernate.api_appchat.Dto.JoinRoomDto;
 import com.spring.hibernate.api_appchat.Service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,5 +40,15 @@ public class ChatRoomController {
     @PostMapping("edit")
     public ResponseEntity<?> editRoom(@RequestBody ChatRoomDto chatRoomDto){
         return ResponseEntity.ok(chatRoomService.editChatroom(chatRoomDto));
+    }
+
+    @PostMapping("add-user")
+    public ResponseEntity<?> addUser(@RequestBody JoinRoomDto joinRoomDto){
+        return ResponseEntity.ok(chatRoomService.addUser(joinRoomDto));
+    }
+
+    @PostMapping("remove-user")
+    public ResponseEntity<?> removeUser(@RequestBody JoinRoomDto joinRoomDto){
+        return ResponseEntity.ok(chatRoomService.removeUser(joinRoomDto));
     }
 }
