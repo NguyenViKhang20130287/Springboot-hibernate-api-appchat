@@ -1,6 +1,7 @@
 package com.spring.hibernate.api_appchat.ServiceImpl;
 
 import com.spring.hibernate.api_appchat.Dao.UserDao;
+import com.spring.hibernate.api_appchat.Dto.JoinRoomDto;
 import com.spring.hibernate.api_appchat.Dto.UserDto;
 import com.spring.hibernate.api_appchat.Entity.User;
 import com.spring.hibernate.api_appchat.Service.UserService;
@@ -30,5 +31,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> editUser(UserDto userDto) {
         return userDao.editUser(userDto);
+    }
+
+    @Override
+    public ResponseEntity<?> joinRoom(JoinRoomDto joinRoomDto) {
+        return userDao.joinRoom(joinRoomDto);
+    }
+
+    @Override
+    public ResponseEntity<?> exitRoom(long roomId, long userId) {
+        return userDao.exitRoom(roomId, userId);
     }
 }

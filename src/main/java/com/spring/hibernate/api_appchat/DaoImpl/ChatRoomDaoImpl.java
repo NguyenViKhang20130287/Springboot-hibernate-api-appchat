@@ -65,11 +65,16 @@ public class ChatRoomDaoImpl implements ChatRoomDao {
         return new ResponseEntity<>(chatRoom, HttpStatus.CREATED);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<?> deleteRoom(long roomId, long hostId) {
         ChatRoom chatRoom = findById(roomId);
+        List<RoomMember> roomMembers = chatRoom.getMembers();
         if (chatRoom.getHost().getId() != hostId)
             return new ResponseEntity<>("No permission!!", HttpStatus.BAD_REQUEST);
+        for (RoomMember roomMember : roomMembers){
+            entityManager.remove(roomMember);
+        }
         entityManager.remove(chatRoom);
         return new ResponseEntity<>("Delete successful", HttpStatus.OK);
     }
@@ -80,6 +85,7 @@ public class ChatRoomDaoImpl implements ChatRoomDao {
         return new ResponseEntity<>(chatRoom, HttpStatus.OK);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<?> editChatroom(ChatRoomDto chatRoomDto) {
         ChatRoom chatRoom = findById(chatRoomDto.getId());

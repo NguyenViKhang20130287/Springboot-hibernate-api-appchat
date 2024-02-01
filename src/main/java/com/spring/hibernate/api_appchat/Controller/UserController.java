@@ -1,5 +1,6 @@
 package com.spring.hibernate.api_appchat.Controller;
 
+import com.spring.hibernate.api_appchat.Dto.JoinRoomDto;
 import com.spring.hibernate.api_appchat.Dto.UserDto;
 import com.spring.hibernate.api_appchat.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,4 +31,14 @@ public class UserController {
     public ResponseEntity<?> editUser(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.editUser(userDto));
     }
+    @PostMapping("join-room")
+    public ResponseEntity<?> joinRoom(@RequestBody JoinRoomDto joinRoomDto){
+        return ResponseEntity.ok(userService.joinRoom(joinRoomDto));
+    }
+
+    @PostMapping("exit-room")
+    public ResponseEntity<?> exitRoom(@RequestParam long roomId, @RequestParam long userId){
+        return ResponseEntity.ok(userService.exitRoom(roomId, userId));
+    }
+
 }

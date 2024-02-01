@@ -31,7 +31,7 @@ public class ChatRoom {
     private String createdAt;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "host_id")
     private User host;
 
