@@ -5,4 +5,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface PrivateMessageService {
     ResponseEntity<?> sendMessage(PrivateMessageDto privateMessageDto);
+    ResponseEntity<?> loadAllMessage(PrivateMessageDto privateMessageDto);
 }
