@@ -14,4 +14,5 @@ public interface ChatRoomDao {
     ResponseEntity<?> editChatroom(ChatRoomDto chatRoomDto);
     ResponseEntity<?> addUser(JoinRoomDto joinRoomDto);
     ResponseEntity<?> removeUser(JoinRoomDto joinRoomDto);
+    ResponseEntity<?> findUserByDisplayName(long roomId, String displayName);
 }

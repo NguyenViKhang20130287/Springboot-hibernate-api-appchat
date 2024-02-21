@@ -51,4 +51,9 @@ public class ChatRoomController {
     public ResponseEntity<?> removeUser(@RequestBody JoinRoomDto joinRoomDto){
         return ResponseEntity.ok(chatRoomService.removeUser(joinRoomDto));
     }
+
+    @GetMapping("find-user-by-display-name")
+    public ResponseEntity<?> findUser(@RequestParam long roomId, @RequestParam String displayName){
+        return ResponseEntity.ok(chatRoomService.findUserByDisplayName(roomId, displayName));
+    }
 }

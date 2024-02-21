@@ -57,4 +57,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public ResponseEntity<?> removeUser(JoinRoomDto joinRoomDto) {
         return chatRoomDao.removeUser(joinRoomDto);
     }
+
+    @Override
+    public ResponseEntity<?> findUserByDisplayName(long roomId, String displayName) {
+        return chatRoomDao.findUserByDisplayName(roomId, displayName);
+    }
 }

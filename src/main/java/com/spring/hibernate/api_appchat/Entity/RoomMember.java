@@ -1,5 +1,6 @@
 package com.spring.hibernate.api_appchat.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -20,7 +21,8 @@ public class RoomMember {
     @JoinColumn(name = "room_id")
     private ChatRoom chatRoom;
 
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User joinedUser;

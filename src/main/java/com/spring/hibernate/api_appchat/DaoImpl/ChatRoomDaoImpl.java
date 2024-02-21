@@ -3,6 +3,7 @@ package com.spring.hibernate.api_appchat.DaoImpl;
 import com.spring.hibernate.api_appchat.Dao.ChatRoomDao;
 import com.spring.hibernate.api_appchat.Dto.ChatRoomDto;
 import com.spring.hibernate.api_appchat.Dto.JoinRoomDto;
+import com.spring.hibernate.api_appchat.Dto.MemberDto;
 import com.spring.hibernate.api_appchat.Entity.ChatRoom;
 import com.spring.hibernate.api_appchat.Entity.RoomMember;
 import com.spring.hibernate.api_appchat.Entity.User;
@@ -129,4 +130,29 @@ public class ChatRoomDaoImpl implements ChatRoomDao {
         }
         return new ResponseEntity<>("The user has not joined this chat room", HttpStatus.BAD_REQUEST);
     }
+
+    @Override
+    public ResponseEntity<?> findUserByDisplayName(long roomId, String displayName) {
+        List<MemberDto> result = new ArrayList<>();
+        try {
+            String query = "from RoomMember where joinedUser.displayName like :displayName and chatRoom.id=:roomId";
+            TypedQuery<RoomMember> typedQuery = entityManager.createQuery(query, RoomMember.class);
+            typedQuery.setParameter("displayName", "%" + displayName + "%");
+            typedQuery.setParameter("roomId", roomId);
+            List<RoomMember> roomMembers = typedQuery.getResultList();
+            for(RoomMember roomMember : roomMembers){
+                MemberDto memberDto = new MemberDto();
+                memberDto.setId(roomMember.getId());
+                memberDto.setChatRoom(roomMember.getChatRoom());
+                memberDto.setJoinedUser(roomMember.getJoinedUser());
+                memberDto.setJoinedAt(roomMember.getJoinedAt());
+                result.add(memberDto);
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Error occurred during query execution", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }
