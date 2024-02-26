@@ -7,6 +7,7 @@ import com.spring.hibernate.api_appchat.Entity.ChatRoomMessage;
 import com.spring.hibernate.api_appchat.Entity.RoomMember;
 import com.spring.hibernate.api_appchat.Entity.User;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,20 @@ public class ChatRoomMessageDaoImpl implements ChatRoomMessageDao {
 
     @Override
     public ResponseEntity<?> loadAllMessage(ChatRoomMessageDto chatRoomMessageDto) {
-        return null;
+        ChatRoom chatRoom = entityManager.find(ChatRoom.class, chatRoomMessageDto.getRoomId());
+        User sender = entityManager.find(User.class, chatRoomMessageDto.getSenderId());
+        if (chatRoom == null) return new ResponseEntity<>("Room not found!!!", HttpStatus.NOT_FOUND);
+        if (sender == null) return new ResponseEntity<>("User not found!!!", HttpStatus.NOT_FOUND);
+        List<RoomMember> members = chatRoom.getMembers();
+        String query = "from ChatRoomMessage where chatRoom=?1  order by createdAt asc";
+        for (RoomMember member : members){
+            if (member.getJoinedUser().getId() == sender.getId()){
+                TypedQuery<ChatRoomMessage> roomMessages = entityManager.createQuery(query, ChatRoomMessage.class);
+                roomMessages.setParameter(1, chatRoom);
+                List<ChatRoomMessage> result = roomMessages.getResultList().isEmpty() ? null : roomMessages.getResultList();
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>("User has not joined the chat room", HttpStatus.BAD_REQUEST);
     }
 }

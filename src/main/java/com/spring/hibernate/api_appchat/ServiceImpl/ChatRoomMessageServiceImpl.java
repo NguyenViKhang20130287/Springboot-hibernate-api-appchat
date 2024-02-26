@@ -22,6 +22,6 @@ public class ChatRoomMessageServiceImpl implements ChatRoomMessageService {
 
     @Override
     public ResponseEntity<?> loadAllMessage(ChatRoomMessageDto chatRoomMessageDto) {
-        return null;
+        return chatRoomMessageDao.loadAllMessage(chatRoomMessageDto);
     }
 }

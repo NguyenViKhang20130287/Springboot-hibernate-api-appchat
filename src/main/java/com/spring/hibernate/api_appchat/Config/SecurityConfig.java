@@ -38,9 +38,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests(auth ->
-                        auth
-                        .requestMatchers(HttpMethod.GET, "api/user/users").hasRole("ADMIN")
-
+                auth
+                        // auth
+                        .requestMatchers(HttpMethod.POST, "api/v1/auth/sign-in").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/v1/auth/sign-up").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/v1/auth/sign-up/confirm").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/v1/auth/forgot-password").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/v1/auth/forgot-password/confirm").permitAll()
         );
         httpSecurity.httpBasic();
         httpSecurity.csrf().disable();

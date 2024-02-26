@@ -19,4 +19,9 @@ public class ChatRoomMessageController {
     public ResponseEntity<?> sendMessage(@RequestBody ChatRoomMessageDto chatRoomMessageDto){
         return ResponseEntity.ok(chatRoomMessageService.sendMessage(chatRoomMessageDto));
     }
+
+    @GetMapping("load-all")
+    public ResponseEntity<?> loadAllMessage(@RequestBody ChatRoomMessageDto chatRoomMessageDto){
+        return ResponseEntity.ok(chatRoomMessageService.loadAllMessage(chatRoomMessageDto));
+    }
 }
